@@ -1,12 +1,9 @@
-# tfli2c.py
+# tfli2c
 ### A python module for the Benewake TFLuna LiDAR distance sensor in I2C mode
-<hr />
 
 The **TFLuna** in I2C communication mode is unique among the Benewake family of LiDAR products.
 
-The communications mode (UART/U2C) is set by the voltage level of Pin #5 rather than a command; and the internal device registers of the device can be directly addressed.<br />
-
-Benewake advises that sampling data continuously without using the Pin #6 "data ready" signal is unreliable.  For simplicity and accuracy, this module sets the device to Trigger Mode during initalization and sends a Trigger One-Shot command before each data sample command.
+First, the communications mode (UART/U2C) is set by the voltage level of Pin #5 rather than a command. Second, the internal device registers of the device can be addressed directly. And third, Benewake advises that sampling data continuously without using the Pin #6 "data ready" signal is unreliable.  For simplicity and accuracy, this module sets the device to Trigger Mode during initalization and sends a Trigger One-Shot command before each data sample command.  (Use of Trigger Mode also significantly reduces power comsumption.)
 
 This library is *not compatible* with any other Benwake LiDAR device in I2C mode. However, in serial (UART) mode, the **TFLuna** is largely compatible with the **TFMini-Plus** and is therefore able to use that module, `tfmplus.py`, for Raspberry Pi and other python projects.
 
