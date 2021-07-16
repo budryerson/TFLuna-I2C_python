@@ -1,23 +1,23 @@
 # tfli2c.py
 ### A python module for the Benewake TFLuna LiDAR distance sensor in I2C mode
 <hr />
+
 The **TFLuna** in I2C communication mode is unique among the Benewake family of LiDAR products.
 
 The communications mode (UART/U2C) is set by the voltage level of Pin #5 rather than a command; and the internal device registers of the device can be directly addressed.<br />
 
-Benewake advises that sampling data continuously without using the Pin #6 "data ready" signal is unreliable.  For simplicity, therefore, this module sets the device to Trigger Mode during initalization and sends a Trigger One-Shot command before each data sample command, `getData()`.
+Benewake advises that sampling data continuously without using the Pin #6 "data ready" signal is unreliable.  For simplicity and accuracy, this module sets the device to Trigger Mode during initalization and sends a Trigger One-Shot command before each data sample command.
 
 This library is *not compatible* with any other Benwake LiDAR device in I2C mode. However, in serial (UART) mode, the **TFLuna** is largely compatible with the **TFMini-Plus** and is therefore able to use that module, `tfmplus.py`, for Raspberry Pi and other python projects.
 
-This module requires the python **smbus** or **smbus2** module to be installed.
+This module requires the python **smbus** or **smbus2** module to be installed.  Additional instances of the module can be imported to support additional devices.
 <hr />
 
 ### Primary Functions
 
-`begin( addr, port)` sends parameters with the I2C port and address numbers, tests the communication, and returns a boolean result.  This function also sets the device to Trigger or One-Shot Mode.<br />
-NOTE:  Additional instances of this module can be imported to support additional devices.
+`begin( addr, port)` sends I2C address and port parameters, tests communication, switches the device from its default Continuous Mode to the One-Shot or Trigger Mode, and returns a boolean result.
  
-`getData()` gets a frame of data from the device and sets variables for:
+`getData()` reads the first six registers of the device and sets the value of three variables:
 <br />&nbsp;&nbsp;&#8211;&nbsp; `dist` Distance to target in centimeters. Range: 0 to 1200
 <br />&nbsp;&nbsp;&#8211;&nbsp; `flux` Strength or quality of return signal or error. Range: -1 and 0 to 32767
 <br />&nbsp;&nbsp;&#8211;&nbsp; `temp` Temperature in quarter degrees of Celsius. Range: -25.00°C to 125.00°C<br />
