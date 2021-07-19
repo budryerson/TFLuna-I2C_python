@@ -3,9 +3,9 @@
 
 The **TFLuna** in I2C communication mode is unique among the Benewake family of LiDAR products.
 
-First, the communications mode (UART/U2C) is set by the voltage level of Pin #5 rather than a command. Second, the internal device registers of the device can be addressed directly. And third, Benewake advises that sampling data continuously without using the Pin #6 "data ready" signal is unreliable.  For simplicity and accuracy, this module sets the device to Trigger Mode during initalization and sends a Trigger One-Shot command before each data sample command.  (Use of Trigger Mode also significantly reduces power comsumption.)
+First, the communications mode (UART/U2C) is set by the voltage level of Pin #5 rather than a command. Second, the internal registers of the device can be addressed directly. And third, Benewake advises that sampling data continuously without using the Pin #6 "data ready" signal is unreliable.  For simplicity and accuracy, this module sets the device to Trigger (One-Shot) Mode during initialization and sends a Trigger command before each call to read the data registers.  (The use of Trigger Mode also significantly reduces power consumption.)
 
-This library is *not compatible* with any other Benwake LiDAR device in I2C mode. However, in serial (UART) mode, the **TFLuna** is largely compatible with the **TFMini-Plus** and is therefore able to use that module, `tfmplus.py`, for Raspberry Pi and other python projects.
+This library is *not compatible* with any other Benewake LiDAR device in I2C mode. However, in serial (UART) mode, the **TFLuna** is largely compatible with the **TFMini-Plus** and is therefore able to use that module, `tfmplus.py`, for Raspberry Pi and other python projects.
 
 This module requires the python **smbus** or **smbus2** module to be installed.  Additional instances of the module can be imported to support additional devices.
 <hr />
@@ -44,17 +44,18 @@ A variety of other commands are explicitly defined and  may be sent individually
 
 <hr>
 
-In **I2C** mode, the TFMini-Plus functions as an I2C slave device.  The default address is `0x10` (16 decimal), but is user-programable by sending the `setI2Caddr( addrNew)` command and a parameter in the range of `0x07` to `0x77` (7 to 119).  The new address requires a `softReset()` command to take effect.  A `hardReset()` command (Restore Factory Settings) will reset the device to the default address of `0x10`.
+In **I2C** mode, the TFMini-Plus functions as an I2C slave device.  The default address is `0x10` (16 decimal), but is user-programmable by sending the `setI2Caddr( addrNew)` command and a parameter in the range of `0x07` to `0x77` (7 to 119).  The new address requires a `softReset()` command to take effect.  A `hardReset()` command (Restore Factory Settings) will reset the device to the default address of `0x10`.
 
 Some commands that modify internal parameters are processed within 1 millisecond.  But some commands that require the MCU to communicate with other chips may take several milliseconds.  And some commands that erase the flash memory of the MCU, such as `Save_Settings` and `Hard_Reset`, may take several hundred milliseconds.
 
-Frame-rate and most other parameter changes should be followed by a `Save_Settings` command or the values may be lost when power is removed.  With the TFLuna, commands are available to examine the value of various device paramters such as frame rate, trigger mode, power mode, threshold values, internal timer, error and production code.
+Frame-rate and most other parameter changes should be followed by a `Save_Settings` command or the values may be lost when power is removed.  With the TFLuna, commands are available to examine the value of various device parameters such as frame rate, trigger mode, power mode, threshold values, internal timer, error and production code.
 
 <hr>
 
-Also included in the repository are:
-<br />&nbsp;&nbsp;&#9679;&nbsp; An example Python sketch "tfli2c_test.py" as well as a simplified version of the example code, "tfli2c_simple.py".
-<br />&nbsp;&nbsp;&#9679;&nbsp; A recent copy of the manufacturer's Datasheet and Product Manual.
+Also included in the package are:
+<br />&nbsp;&nbsp;&#9679;&nbsp; In the `tests` folder: An example Python sketch, `tfli2c_test.py`, and a simplified version of the same code, `tfli2c_simple.py`.
+<br />&nbsp;&nbsp;&#9679;&nbsp; In the `docs` folder: A recent copy of the manufacturer's Product Manual.
 
 All of the code for this Library is richly commented to assist with understanding and in problem solving.
+
 
