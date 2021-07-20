@@ -1,13 +1,13 @@
 # tfli2c
 ### A python module for the Benewake TFLuna LiDAR distance sensor in I2C mode
 
-The **TFLuna** in I2C communication mode is unique among the Benewake family of LiDAR products.
+In I2C communication mode, the **TFLuna** is unique among the Benewake family of LiDAR products.  First, the selection of communications mode (UART/I2C) is made by the voltage level of Pin #5 rather than by a command. Second, the internal registers of the device can be addressed directly. And third, Benewake advises that sampling data continuously without using the Pin #6 "data ready" signal is unreliable.  For that last reason, this module switches the device from Continuous to Trigger Mode during initialization, and then sends a Trigger command before every call to read data.  The use of Trigger Mode also reduces power consumption significantly, by almost an order of magnitude.
 
-First, the communications mode (UART/U2C) is set by the voltage level of Pin #5 rather than a command. Second, the internal registers of the device can be addressed directly. And third, Benewake advises that sampling data continuously without using the Pin #6 "data ready" signal is unreliable.  For simplicity and accuracy, this module sets the device to Trigger (One-Shot) Mode during initialization and sends a Trigger command before each call to read the data registers.  (The use of Trigger Mode also significantly reduces power consumption.)
+In I2C communication mode, therefore, the **TFLuna** and the `tfli2c` library are *not compatible* with any other Benewake LiDAR device.  In serial (UART) mode, however, the **TFLuna** is highly compatible with the **TFMini-Plus** and the **TFMini-S** and they can all use the same `tfmplus` module for python projects.
 
-This library is *not compatible* with any other Benewake LiDAR device in I2C mode. However, in serial (UART) mode, the **TFLuna** is largely compatible with the **TFMini-Plus** and is therefore able to use that module, `tfmplus.py`, for Raspberry Pi and other python projects.
+This module requires and will automatically try to install the python `smbus` module.  The `smbus` and `smbus2` modules do not work and will not install in a Windows environment.
 
-This module requires the python **smbus** or **smbus2** module to be installed.  Additional instances of the module can be imported to support additional devices.
+Multiple devices can be supported by importing additional instances of the module using different local names.
 <hr />
 
 ### Primary Functions
@@ -32,11 +32,11 @@ A variety of other commands are explicitly defined and  may be sent individually
 <br />&#8211;&nbsp;&nbsp; `setI2Caddr( addrNew)` - send value of new I2C address: `0x08` to `0x77`
 <br />&#8211;&nbsp;&nbsp; `setEnable()` - turn ON device light source
 <br />&#8211;&nbsp;&nbsp; `setDisable()` - turn OFF device light source
-<br />&#8211;&nbsp;&nbsp; `setModeCont()` - set device to sample continmuously at frame rate
-<br />&#8211;&nbsp;&nbsp; `setModeTrig()` - set device to sample once when triggered
+<br />&#8211;&nbsp;&nbsp; `setModeCont()` - set device to sample continuously at Frame Rate
+<br />&#8211;&nbsp;&nbsp; `setModeTrig()` - set device to sample only when triggered
 <br />&#8211;&nbsp;&nbsp; `getMode()` - returns string of mode type: 'continuous' or 'trigger'
 <br />&#8211;&nbsp;&nbsp; `setTrigger()` - trigger device to sample one time
-<br />&#8211;&nbsp;&nbsp; `setFrameRate( fps)` - set device Frame-Rate in frames per second
+<br />&#8211;&nbsp;&nbsp; `setFrameRate( fps)` - set device Frame Rate in frames per second: `1`to `250`
 <br />&#8211;&nbsp;&nbsp; `getFrameRate()` - return two-byte unsigned word of Frame-Rate in frames per second
 <br />&#8211;&nbsp;&nbsp; `getTime()` - return two-byte unsigned word of device clock in milliseconds
 <br />&#8211;&nbsp;&nbsp; `getProdCode()` - return 14 character string of product serial number
@@ -44,11 +44,11 @@ A variety of other commands are explicitly defined and  may be sent individually
 
 <hr>
 
-In **I2C** mode, the TFMini-Plus functions as an I2C slave device.  The default address is `0x10` (16 decimal), but is user-programmable by sending the `setI2Caddr( addrNew)` command and a parameter in the range of `0x07` to `0x77` (7 to 119).  The new address requires a `softReset()` command to take effect.  A `hardReset()` command (Restore Factory Settings) will reset the device to the default address of `0x10`.
+In **I2C** mode, the TFMini-Plus functions as an I2C slave device.  The default address is `0x10` (16 decimal), but is user-programmable by sending the `setI2Caddr( addrNew)` command and a parameter in the range of `0x08` to `0x77` (8 to 119).  The new address requires a `softReset()` command to take effect.  A `hardReset()` command (Restore Factory Settings) will reset the device to the default address of `0x10`.
 
-Some commands that modify internal parameters are processed within 1 millisecond.  But some commands that require the MCU to communicate with other chips may take several milliseconds.  And some commands that erase the flash memory of the MCU, such as `Save_Settings` and `Hard_Reset`, may take several hundred milliseconds.
+Some commands that modify internal parameters are processed within 1 millisecond.  But other commands that require the MCU to communicate with other chips may take several milliseconds.  And some commands that erase the flash memory of the MCU, such as `saveSettings()` and `hardReset()`, may take several hundred milliseconds.
 
-Frame-rate and most other parameter changes should be followed by a `Save_Settings` command or the values may be lost when power is removed.  With the TFLuna, commands are available to examine the value of various device parameters such as frame rate, trigger mode, power mode, threshold values, internal timer, error and production code.
+Frame Rate and most other register changes should be followed by a `saveSettings()` command, or the values may be lost when power is removed.  With the TFLuna, commands are available to examine the value of various device parameters such as internal Time, Frame Rate, Trigger Mode, Error, Version Number and Production Code.
 
 <hr>
 
@@ -57,5 +57,3 @@ Also included in the package are:
 <br />&nbsp;&nbsp;&#9679;&nbsp; In the `docs` folder: A recent copy of the manufacturer's Product Manual.
 
 All of the code for this Library is richly commented to assist with understanding and in problem solving.
-
-
